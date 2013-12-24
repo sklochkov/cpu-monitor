@@ -1,0 +1,48 @@
+#!/bin/sh
+# chkconfig: - 85 15
+
+. /etc/init.d/functions
+
+PIDFILE='/var/run/cpustat.pid'
+SCRIPT='/usr/local/bin/cpustat.py'
+
+start() {
+	daemon --pidfile=$PIDFILE ${SCRIPT}
+	if [ $? -eq 0 ] ; then
+		echo_success
+	else
+		echo_failure
+	fi
+	echo
+}
+
+stop() {
+	kill `cat $PIDFILE`
+	if [ $? -eq 0 ] ; then
+                echo_success
+        else
+                echo_failure
+        fi
+        echo
+}
+
+usage() {
+	echo "Usage: ${0} start|stop|restart"
+}
+
+case "$1" in
+	start)
+		start
+	;;
+	stop)
+		stop
+	;;
+	restart)
+		stop
+		start
+	;;
+	*)
+		usage
+	;;
+esac
+
